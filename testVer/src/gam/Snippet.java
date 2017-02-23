@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -38,6 +40,7 @@ public class Snippet {
 	private static JSONObject zbObj;
 	private static OkHttpClient client;
 	private static int count = 0;
+	private static int listReqCount = 0;
 	private static BufferedImage vetifyImage;
 	private static int vetifyCode = -1;
 //	private static String expertID = "36480";// 测试(陶夏平)
@@ -45,7 +48,7 @@ public class Snippet {
 	
 	private static String deptID = "41040";// 脾胃病科 41040
 	private static String expertID = "36473";// 周斌 36473
-	private static String regDate = "2017-02-24";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
+	private static String regDate = "2017-02-27";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
 	
 	private static String cookie = "acw_tc=AQAAAKfuzl7ziggAS+X5crtpKtRZO3fa";
 
@@ -188,8 +191,8 @@ public class Snippet {
 //        File dir = new File(path);
 
         
-      	String path = "/Users/Will/Downloads/5184CAPTCHA-master/train3";	//	eclipse调试打开
-//        String path = System.getProperty("user.dir")+"/train";			//	jar包打开
+//      	String path = "/Users/Will/Downloads/5184CAPTCHA-master/train3";	//	eclipse调试打开
+        String path = System.getProperty("user.dir")+"/train";			//	jar包打开
         System.out.println(path);
 
         File dir = new File(path);
@@ -458,6 +461,10 @@ public class Snippet {
     
     
     public static void doRequestList() throws Exception {
+    	if (zbObj != null) {
+//    		System.out.println("obj已存在!!!");
+			return;
+		}
     	String urlStr = "http://app.zhicall.cn/mobile-web/mobile/schedule/hospital/10097/dept/"+deptID+"/oneDay";
     	System.out.println("doRequestListStart");
         //3, 发起新的请求,获取返回信息  
@@ -468,6 +475,7 @@ public class Snippet {
                             .add("regDate", regDate)  
                             .build();  
         Request request = new Request.Builder()  
+        					.tag("list")
                             .url(urlStr)  
                             .post(body)  
                             .header("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 8_4 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12H143 (384053392)ZhiCall/5316")
@@ -477,6 +485,7 @@ public class Snippet {
         call.enqueue(new Callback() {
 			
 			public void onResponse(Call arg0, Response response) throws IOException {
+				System.out.println("list-onResponse");
 				// TODO Auto-generated method stub
 				if(response.isSuccessful())  {  
 		            String str = response.body().string();  
@@ -484,12 +493,15 @@ public class Snippet {
 		            JSONArray data = (JSONArray) obj.get("data");
 		            
 		            if (data.size() > 0) {
+		            	client.dispatcher().cancelAll();
 						for (int i = 0; i < data.size(); i++) {
 							JSONObject subObj = data.getJSONObject(i);
+//							System.out.println(subObj);
 							if (subObj.get("id").toString().equals(expertID)) {
 								System.out.println("list请求成功 targetName="+subObj.get("name"));
 								JSONArray subArr = (JSONArray) subObj.get("regScheduleVOList");
 								zbObj = subArr.getJSONObject(0);
+								
 //								System.out.println(zbObj);
 								try {
 									doApply();
@@ -537,7 +549,7 @@ public class Snippet {
     public static void timer() {  
     	int hour = 9;
     	int minute = 14;
-    	int second = 53;
+    	int second = 55;
 //    	int hour = 11;
 //    	int minute = 29;
 //    	int second = 55;
@@ -557,7 +569,8 @@ public class Snippet {
 				System.out.println("doTimer!!!\n当前时间=" + new Date());
 				try {
 					getVetifyCode();
-					doRequestList();
+					TaskList();
+//					doRequestList();
 					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -566,6 +579,29 @@ public class Snippet {
 			}
 		}, time, 1000 * 60 * 60 * 24);
         
+    }
+    
+    public static void TaskList() {  
+    	Runnable runnable = new Runnable() {  
+            public void run() {  
+            	if (listReqCount > 10) {
+					return;
+				}
+                // task to run goes here  
+                System.out.println("TaskListRun - listReqCount="+listReqCount);  
+                listReqCount++;
+                try {
+					doRequestList();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }  
+        };  
+        ScheduledExecutorService service = Executors  
+                .newSingleThreadScheduledExecutor();  
+        // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
+        service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.SECONDS);
     }
     
 }
