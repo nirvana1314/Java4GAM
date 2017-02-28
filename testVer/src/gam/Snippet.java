@@ -43,15 +43,21 @@ public class Snippet {
 	private static int listReqCount = 0;
 	private static BufferedImage vetifyImage;
 	private static int vetifyCode = -1;
-//	private static String expertID = "36480";// 测试(陶夏平)
-//	private static String expertID = "36484";// 测试(张润顺)
-	
 	private static String deptID = "41040";// 脾胃病科 41040
-	private static String expertID = "36473";// 周斌 36473
-	private static String regDate = "2017-02-27";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
-	
 	private static String cookie = "acw_tc=AQAAAKfuzl7ziggAS+X5crtpKtRZO3fa";
-
+	
+	
+	/*****		专家		*****/
+	private static String expertID = "36480";// 测试(陶夏平)
+//	private static String expertID = "36484";// 测试(张润顺)
+//	private static String expertID = "36473";// 周斌 36473
+	/*****		患者		*****/
+//	private static String patientsId = "1066925";// 1030058-李		1066925-王
+	private static String patientsId = "1030058";// 1030058-李		1066925-王
+	/*****		日期		*****/
+	private static String regDate = "2017-03-04";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
+	
+	
 	public static boolean isWhite(int colorInt) {
 		
         Color color = new Color(colorInt);
@@ -394,7 +400,7 @@ public class Snippet {
         .add("version", "1.2.2")  
         .add("hospitalId", "10097")  
         .add("accountId", "153657")  
-        .add("patientsId", "1030058")  
+        .add("patientsId", patientsId)	  
         .add("medicalCardId", "-1")  
         .add("deptId", deptID)  
         .add("expertId", expertID)  
@@ -531,7 +537,14 @@ public class Snippet {
 			
 			public void onFailure(Call arg0, IOException arg1) {
 				// TODO Auto-generated method stub
-				
+				// 请求失败
+	        	System.out.println("doRequestOnFailure");
+	        	try {
+					doRequestList();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
         
@@ -549,7 +562,7 @@ public class Snippet {
     public static void timer() {  
     	int hour = 9;
     	int minute = 14;
-    	int second = 55;
+    	int second = 53;
 //    	int hour = 11;
 //    	int minute = 29;
 //    	int second = 55;
@@ -601,7 +614,7 @@ public class Snippet {
         ScheduledExecutorService service = Executors  
                 .newSingleThreadScheduledExecutor();  
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
-        service.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(runnable, 0, 500, TimeUnit.MILLISECONDS);
     }
     
 }
