@@ -49,13 +49,13 @@ public class Snippet {
 	
 	/*****		专家		*****/
 //	private static String expertID = "36480";// 测试(陶夏平)
-	private static String expertID = "36484";// 测试(张润顺)
-//	private static String expertID = "36473";// 周斌 36473
+//	private static String expertID = "36484";// 测试(张润顺)
+	private static String expertID = "36473";// 周斌 36473
 	/*****		患者		*****/
-//	private static String patientsId = "1066925";// 1030058-李		1066925-王
-	private static String patientsId = "1030058";// 1030058-李		1066925-王
+	private static String patientsId = "1066925";// 1066925-王
+//	private static String patientsId = "1030058";// 1030058-李
 	/*****		日期		*****/
-	private static String regDate = "2017-03-05";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
+	private static String regDate = "2017-03-06";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
 	
 	
 	public static boolean isWhite(int colorInt) {
@@ -197,10 +197,11 @@ public class Snippet {
 //        File dir = new File(path);
 
         
-      	String path = "/Users/Will/Downloads/5184CAPTCHA-master/train3";	//	eclipse调试打开
-//        String path = System.getProperty("user.dir")+"/train";			//	jar包打开
+//      	String path = "/Users/Will/Downloads/5184CAPTCHA-master/train3";	//	eclipse调试打开
+        String path = System.getProperty("user.dir")+"/train";			//	jar包打开
+        
+        
 //        System.out.println(path);
-
         File dir = new File(path);
         
         File[] files = dir.listFiles();
@@ -356,32 +357,32 @@ public class Snippet {
   				result = BeginNum * endNum;
   			}else {
   				// 异常
-//  				System.out.println("不是运算符");
+  				System.out.println("不是运算符");
   				getVetifyCode();
   				return;
   			}
           	
           	if (result < 0 || result > 9) {
           		// 异常
-//          		System.out.println("结果越界");
+          		System.out.println("结果越界");
           		getVetifyCode();
           		return;
           	}
           	
       	}else {
 				// 异常 不是数字
-//				System.out.println("异常, 不是数字" + ".png"+ "BeginStr" + BeginStr + "endStr" + endStr);
+				System.out.println("异常, 不是数字" + ".png"+ "BeginStr" + BeginStr + "endStr" + endStr);
 				getVetifyCode();
 				return;
       	}
       	
-//      	System.out.println("解析成功!!!" + "\n解析值:" + text + " 运算结果为:" + result);
+      	System.out.println("解析成功!!!" + "\n解析值:" + text + " 运算结果为:" + result);
       	System.out.println(result);
       	vetifyCode = result;
 
-//        System.out.println(System.currentTimeMillis()-start+"ms");
+        System.out.println(System.currentTimeMillis()-start+"ms");
         //	挂号申请
-//      	doApply();
+      	doApply();
     }
     
     public static void doApply() throws Exception {
@@ -523,12 +524,13 @@ public class Snippet {
 						}
 					}else {
 						try {
-							doRequestList();
+//							doRequestList();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						System.out.println("未获取到数据 重试"+count++);
+//						System.out.println("未获取到数据 重试"+count++);						}
+					System.out.println("未获取到数据");
 					}
 		        } else {
 					// 请求失败
@@ -556,12 +558,18 @@ public class Snippet {
         .connectTimeout(30, TimeUnit.SECONDS)
         .build();
     	
-    	getVetifyCode();
+    	for (String string : args) {
+        	System.out.println("out="+string);
+        	vetifyCode = Integer.parseInt(string);
+        	System.out.println(vetifyCode);
+		}
+//    	System.out.println("args="+args);
+//    	getVetifyCode();
 //    	doRequestList();
-//    	timer();
+    	startTimer();
     }
     
-    public static void timer() {  
+    public static void startTimer() {  
     	int hour = 9;
     	int minute = 14;
     	int second = 53;
@@ -585,7 +593,38 @@ public class Snippet {
 				try {
 					getVetifyCode();
 //					TaskList();
-					doRequestList();
+					listTimer();
+//					doRequestList();
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}, time, 1000 * 60 * 60 * 24);
+        
+    }
+    
+    
+    public static void listTimer() {  
+    	int hour = 9;
+    	int minute = 15;
+    	int second = 00;
+    	System.out.println("listTimerStart");
+    	Calendar calendar = Calendar.getInstance();  
+        calendar.set(Calendar.HOUR_OF_DAY, hour); 		// 控制时  
+        calendar.set(Calendar.MINUTE, minute);       	// 控制分
+        calendar.set(Calendar.SECOND, second);       	// 控制秒
+  
+        Date time = calendar.getTime();         	// 得出执行任务的时间,此处为今天的9:14:55 
+  
+        Timer timer = new Timer();  
+        timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				System.out.println("doListTimer!!!\n当前时间=" + new Date());
+				try {
+					TaskList();
 					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -599,7 +638,7 @@ public class Snippet {
     public static void TaskList() {  
     	Runnable runnable = new Runnable() {  
             public void run() {  
-            	if (listReqCount > 1) {
+            	if (listReqCount > 100) {
 					return;
 				}
                 // task to run goes here  
@@ -616,7 +655,7 @@ public class Snippet {
         ScheduledExecutorService service = Executors  
                 .newSingleThreadScheduledExecutor();  
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
-        service.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS);
+        service.scheduleAtFixedRate(runnable, 0, 10, TimeUnit.MILLISECONDS);
     }
     
 }
