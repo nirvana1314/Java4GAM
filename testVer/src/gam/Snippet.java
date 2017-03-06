@@ -39,7 +39,6 @@ import okhttp3.Response;
 public class Snippet {
 	private static JSONObject zbObj;
 	private static OkHttpClient client;
-	private static int count = 0;
 	private static int listReqCount = 0;
 	private static BufferedImage vetifyImage;
 	private static int vetifyCode = -1;
@@ -55,7 +54,7 @@ public class Snippet {
 	private static String patientsId = "1066925";// 1066925-王
 //	private static String patientsId = "1030058";// 1030058-李
 	/*****		日期		*****/
-	private static String regDate = "2017-03-06";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
+	private static String regDate = "2017-03-07";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
 	
 	
 	public static boolean isWhite(int colorInt) {
@@ -386,7 +385,7 @@ public class Snippet {
     }
     
     public static void doApply() throws Exception {
-    	System.out.println("doApplyStart");
+    	System.out.println("doApplyStart"+ new Date());
     	if (vetifyCode == -1) {
     		System.out.println("验证码尚未请求"+vetifyCode);
     		return;
@@ -493,7 +492,7 @@ public class Snippet {
         call.enqueue(new Callback() {
 			
 			public void onResponse(Call arg0, Response response) throws IOException {
-				System.out.println("list-onResponse");
+				System.out.println("list-onResponse"+ new Date());
 				// TODO Auto-generated method stub
 				if(response.isSuccessful())  {  
 		            String str = response.body().string();  
@@ -501,7 +500,7 @@ public class Snippet {
 		            JSONArray data = (JSONArray) obj.get("data");
 		            
 		            if (data.size() > 0) {
-		            	client.dispatcher().cancelAll();
+//		            	client.dispatcher().cancelAll();
 						for (int i = 0; i < data.size(); i++) {
 							JSONObject subObj = data.getJSONObject(i);
 //							System.out.println(subObj);
@@ -577,7 +576,7 @@ public class Snippet {
 //    	int minute = 29;
 //    	int second = 55;
     	System.out.println("开始时间=" + new Date());
-    	System.out.println("科室="+deptID+"     -----(脾胃科-41040)\n" + "专家="+expertID+"     -----(周斌-36473, 陶夏平-36480, 张润顺-36484)"+"\n预约时间="+regDate+"\n开始抢号时间="+hour+"-"+minute+"-"+second+"\n-waiting...");
+    	System.out.println("科室="+deptID+"     -----(脾胃科-41040)\n" + "专家="+expertID+"     -----(周斌-36473, 陶夏平-36480, 张润顺-36484)"+"\nPatientsId="+patientsId+"     -----(王-1066925, 李-1030058)"+"\n预约时间="+regDate+"\n开始抢号时间="+hour+"-"+minute+"-"+second+"\n-waiting...");
         Calendar calendar = Calendar.getInstance();  
         calendar.set(Calendar.HOUR_OF_DAY, hour); 		// 控制时  
         calendar.set(Calendar.MINUTE, minute);       	// 控制分
@@ -608,8 +607,8 @@ public class Snippet {
     
     public static void listTimer() {  
     	int hour = 9;
-    	int minute = 15;
-    	int second = 00;
+    	int minute = 14;
+    	int second = 58;
     	System.out.println("listTimerStart");
     	Calendar calendar = Calendar.getInstance();  
         calendar.set(Calendar.HOUR_OF_DAY, hour); 		// 控制时  
@@ -638,7 +637,7 @@ public class Snippet {
     public static void TaskList() {  
     	Runnable runnable = new Runnable() {  
             public void run() {  
-            	if (listReqCount > 100) {
+            	if (listReqCount > 50) {
 					return;
 				}
                 // task to run goes here  
