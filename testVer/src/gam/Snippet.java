@@ -54,7 +54,7 @@ public class Snippet {
 	private static String patientsId = "1066925";// 1066925-王
 //	private static String patientsId = "1030058";// 1030058-李
 	/*****		日期		*****/
-	private static String regDate = "2017-03-07";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
+	private static String regDate = "2017-03-10";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
 	
 	
 	public static boolean isWhite(int colorInt) {
@@ -500,7 +500,7 @@ public class Snippet {
 		            JSONArray data = (JSONArray) obj.get("data");
 		            
 		            if (data.size() > 0) {
-//		            	client.dispatcher().cancelAll();
+		            	client.dispatcher().cancelAll();
 						for (int i = 0; i < data.size(); i++) {
 							JSONObject subObj = data.getJSONObject(i);
 //							System.out.println(subObj);
@@ -654,7 +654,7 @@ public class Snippet {
         ScheduledExecutorService service = Executors  
                 .newSingleThreadScheduledExecutor();  
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
-        service.scheduleAtFixedRate(runnable, 0, 10, TimeUnit.MILLISECONDS);
+        service.scheduleAtFixedRate(runnable, 0, 50, TimeUnit.MILLISECONDS);
     }
     
 }
