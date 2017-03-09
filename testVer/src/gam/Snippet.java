@@ -54,7 +54,7 @@ public class Snippet {
 	private static String patientsId = "1066925";// 1066925-王
 //	private static String patientsId = "1030058";// 1030058-李
 	/*****		日期		*****/
-	private static String regDate = "2017-03-10";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
+	private static String regDate = "2017-03-13";//	周一(周五预约) 周二(周六预约) 周五(周二预约)
 	
 	
 	public static boolean isWhite(int colorInt) {
@@ -501,6 +501,7 @@ public class Snippet {
 		            
 		            if (data.size() > 0) {
 		            	client.dispatcher().cancelAll();
+		            	
 						for (int i = 0; i < data.size(); i++) {
 							JSONObject subObj = data.getJSONObject(i);
 //							System.out.println(subObj);
@@ -523,7 +524,7 @@ public class Snippet {
 						}
 					}else {
 						try {
-//							doRequestList();
+							doRequestList();
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -608,7 +609,7 @@ public class Snippet {
     public static void listTimer() {  
     	int hour = 9;
     	int minute = 14;
-    	int second = 58;
+    	int second = 54;
     	System.out.println("listTimerStart");
     	Calendar calendar = Calendar.getInstance();  
         calendar.set(Calendar.HOUR_OF_DAY, hour); 		// 控制时  
@@ -637,7 +638,7 @@ public class Snippet {
     public static void TaskList() {  
     	Runnable runnable = new Runnable() {  
             public void run() {  
-            	if (listReqCount > 50) {
+            	if (listReqCount > 20) {
 					return;
 				}
                 // task to run goes here  
@@ -654,7 +655,7 @@ public class Snippet {
         ScheduledExecutorService service = Executors  
                 .newSingleThreadScheduledExecutor();  
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
-        service.scheduleAtFixedRate(runnable, 0, 50, TimeUnit.MILLISECONDS);
+        service.scheduleAtFixedRate(runnable, 0, 100, TimeUnit.MILLISECONDS);
     }
     
 }
